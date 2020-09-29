@@ -1,5 +1,14 @@
 # Giz
 
+## Work In Progress
+
+This project is really early in development, thus this is not a finished work.
+Many API breaking changes may come until this finishes the core functionalities and we get a minimum API stabilization.
+
+## Usage
+
+TODO
+
 ## Trivia
 
 Did you know...

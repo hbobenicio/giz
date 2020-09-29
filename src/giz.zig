@@ -1,4 +1,6 @@
 //! Giz - Ansi support for zig.
+//! TODO Transform all TODO's of this project into github issues
+//! TODO conform API to style guide: https://ziglang.org/documentation/master/#Names
 
 const std = @import("std");
 const os = std.os;
@@ -38,12 +40,14 @@ pub const Style = struct {
     // TODO builder API
 };
 
-// TODO reimplement this with an array list and std.mem.join
+// TODO Consider reimplementing this with an array list and std.mem.join
+// TODO Consider creating an init function with the separator parameter (which could be ';' or ':')
+// TODO Consider renaming this to something more Opaque/Reusable and intuitive (like CsvBuilder...)
 const EscapingSequence = struct {
     buf: [30]u8 = undefined,
     len: usize = 0,
 
-    pub fn appendCode(self: *EscapingSequence, code: []const u8) std.fmt.BufPrintError!void {
+    pub fn appendCode(self: *@This(), code: []const u8) std.fmt.BufPrintError!void {
         if (code.len + self.len > 30) {
             return error.NoSpaceLeft;
         }
@@ -54,7 +58,7 @@ const EscapingSequence = struct {
         std.mem.copy(u8, self.buf[self.len..30], code);
         self.len += code.len;
     }
-    pub fn toSlice(self: *EscapingSequence) []const u8 {
+    pub fn toSlice(self: *@This()) []const u8 {
         return self.buf[0..self.len];
     }
 };
@@ -100,20 +104,80 @@ pub fn fmtStyle(buf: []u8, str: []const u8, style: Style) std.fmt.BufPrintError!
         try escapeSequence.appendCode(codes.graphics.attr.Strikethrough);
     }
 
-    const styleEscapeCode = try fmtGraphicsCode(buf, escapeSequence.toSlice());
-
-    return fmt.bufPrint(buf[styleEscapeCode.len..], "{}{}{}", .{
-        styleEscapeCode,
+    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+        codes.EscapePrefix,
+        escapeSequence.toSlice(),
+        codes.graphics.SetModeSuffix,
         str,
         resetEscapeSequence(),
     });
 }
 
-fn fmtGraphicsCode(buf: []u8, code: []const u8) std.fmt.BufPrintError![]u8 {
+// TODO consider if we will use this function. Is that worth it? (subslicing buf and double writing to memory doesn't seem a good payoff)
+inline fn fmtGraphicsCode(buf: []u8, code: []const u8) std.fmt.BufPrintError![]u8 {
     return fmt.bufPrint(buf, "{}{}{}", .{
         codes.EscapePrefix,
         code,
         codes.graphics.SetModeSuffix,
+    });
+}
+
+pub fn fmtForegroundRGB(buf: []u8, r: u8, g: u8, b: u8, str: []const u8) std.fmt.BufPrintError![]u8 {
+    var redBuf: [3]u8 = undefined;
+    var greenBuf: [3]u8 = undefined;
+    var blueBuf: [3]u8 = undefined;
+
+    const redStr = try fmt.bufPrint(redBuf[0..], "{}", .{r});
+    const greenStr = try fmt.bufPrint(greenBuf[0..], "{}", .{g});
+    const blueStr = try fmt.bufPrint(blueBuf[0..], "{}", .{b});
+
+    return fmtForegroundRGBStr(buf, redStr, greenStr, blueStr, str);
+}
+
+pub fn fmtForegroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u8, str: []const u8) std.fmt.BufPrintError![]u8 {
+    var escapeSeq = EscapingSequence{};
+    try escapeSeq.appendCode(codes.color.fg.FgHiColorRGBPreffix);
+    try escapeSeq.appendCode(r);
+    try escapeSeq.appendCode(g);
+    try escapeSeq.appendCode(b);
+    const rgbCode: []const u8 = escapeSeq.toSlice();
+
+    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+        codes.EscapePrefix,
+        rgbCode,
+        codes.graphics.SetModeSuffix,
+        str,
+        resetForegroundEscapeSequence(),
+    });
+}
+
+pub fn fmtBackgroundRGB(buf: []u8, r: u8, g: u8, b: u8, str: []const u8) std.fmt.BufPrintError![]u8 {
+    var redBuf: [3]u8 = undefined;
+    var greenBuf: [3]u8 = undefined;
+    var blueBuf: [3]u8 = undefined;
+
+    const redStr = try fmt.bufPrint(redBuf[0..], "{}", .{r});
+    const greenStr = try fmt.bufPrint(greenBuf[0..], "{}", .{g});
+    const blueStr = try fmt.bufPrint(blueBuf[0..], "{}", .{b});
+
+    return fmtBackgroundRGBStr(buf, redStr, greenStr, blueStr, str);
+}
+
+// TODO consider a numeric API for this
+pub fn fmtBackgroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u8, str: []const u8) std.fmt.BufPrintError![]u8 {
+    var escapeSeq = EscapingSequence{};
+    try escapeSeq.appendCode(codes.color.bg.BgHiColorRGBPreffix);
+    try escapeSeq.appendCode(r);
+    try escapeSeq.appendCode(g);
+    try escapeSeq.appendCode(b);
+    const rgbCode: []const u8 = escapeSeq.toSlice();
+
+    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+        codes.EscapePrefix,
+        rgbCode,
+        codes.graphics.SetModeSuffix,
+        str,
+        resetBackgroundEscapeSequence(),
     });
 }
 

@@ -24,10 +24,13 @@ pub fn main() !void {
 
     // TODO add some API to set options for color mode: NoColor | 8bit | 256bit
     // TODO add imperative API examples
+    // TODO add fluent API examples (inline style builder)
 
     var tmpBuf: [100]u8 = undefined;
 
-    // Chalk Demo
+    ////////////////
+    // Chalk Demo //
+    ////////////////
     try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "bold", .{ .bold = true })});
     try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "dim", .{ .dim = true })});
     try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "italic", .{ .italic = true })});
@@ -62,7 +65,21 @@ pub fn main() !void {
     };
     try w.print("{}\n", .{try giz.fmtStyle(tmpBuf[0..], "IBM Style", ibmStyle)});
 
-    // TODO finish cursor implementation
+    //////////////////
+    // HiColor Demo //
+    //////////////////
+
+    try w.print("{} ", .{try giz.fmtForegroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zig")});
+    try w.print("{}\n", .{try giz.fmtBackgroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zag")});
+
+    try w.print("{} ", .{try giz.fmtForegroundRGB(tmpBuf[0..], 247, 164, 29, "Zig")});
+    try w.print("{}\n", .{try giz.fmtBackgroundRGB(tmpBuf[0..], 247, 164, 29, "Zag")});
+
+    /////////////////
+    // Cursor Demo //
+    /////////////////
+
+    // TODO finish cursor implementation and demo
     // try giz.cursor.move(tmpBuf[0..], 0, 0);
     // try giz.cursor.up(tmpBuf[0..], 1);
 

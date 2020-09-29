@@ -1,4 +1,12 @@
 //! Codes module groups all ANSI escape codes.
+//!
+//! # References
+//! - https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+//! - https://en.wikipedia.org/wiki/ANSI_escape_code
+//! - https://gist.github.com/XVilka/8346728
+//! - https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+//! - http://ascii-table.com/ansi-escape-sequences.php
+//! - http://ascii-table.com/ansi-escape-sequences-vt-100.php
 
 /// Esc represents the Ansi Escape code.
 pub const Esc: []const u8 = "\x1b";
@@ -6,7 +14,10 @@ pub const Esc: []const u8 = "\x1b";
 /// EscapePrefix represents the common "Esc[" escaping prefix pattern.
 pub const EscapePrefix: []const u8 = Esc ++ "[";
 
+/// cursor is a namespace struct that groups all cursor ansi escape codes
 pub const cursor = struct {
+
+    // TODO Investigate the difference between 'H' and 'f' suffixes.
     /// Moves the cursor to the specified position (coordinates).
     /// If you do not specify a position, the cursor moves to the home position at the upper-left corner of the screen (line 0, column 0). This escape sequence works the same way as the following Cursor Position escape sequence.
     pub const PositionSuffix1: []const u8 = "H";
@@ -81,10 +92,12 @@ pub const color = struct {
         pub const Magenta: []const u8 = "35";
         pub const Cyan: []const u8 = "36";
         pub const White: []const u8 = "37";
-        // TODO 38?
+        // Next arguments are `5;<n>` for Hicolors (0-255) or `2;<r>;<g>;<b> for Custom RGB`
+        pub const FgHiColor: []const u8 = "38";
+        pub const FgReset: []const u8 = "39";
 
-        // TODO Namespace conflicts
-        pub const FgReset: []const u8 = "39"; // https://github.com/chalk/ansi-styles/blob/master/index.js
+        pub const FgHiColorPreffix: []const u8 = FgHiColor ++ ";5";
+        pub const FgHiColorRGBPreffix: []const u8 = FgHiColor ++ ";2";
     };
     /// bg namespace groups all background color codes.
     pub const bg = struct {
@@ -96,10 +109,12 @@ pub const color = struct {
         pub const Magenta: []const u8 = "45";
         pub const Cyan: []const u8 = "46";
         pub const White: []const u8 = "47";
-        // TODO 48?;
-
-        // TODO Namespace conflicts
+        // Next arguments are `5;<n>` for Hicolors (0-255) or `2;<r>;<g>;<b> for Custom RGB`
+        pub const BgHiColor: []const u8 = "48";
         pub const BgReset: []const u8 = "49";
+
+        pub const BgHiColorPreffix: []const u8 = BgHiColor ++ ";5";
+        pub const BgHiColorRGBPreffix: []const u8 = BgHiColor ++ ";2";
     };
     // pub const ForegroundFancyBlue: []const u8 = comptime ESC ++ "[38;5;80m";
 };

@@ -119,4 +119,4 @@ pub const color = struct {
     // pub const ForegroundFancyBlue: []const u8 = comptime ESC ++ "[38;5;80m";
 };
 
-// TODO Consider adding a namespace for Graphics
+// TODO add tests

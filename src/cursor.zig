@@ -118,3 +118,5 @@ pub fn eraseLine(buf: []u8) Error!void {
 
     _ = try stdout.write(escapeSequence);
 }
+
+// TODO add tests

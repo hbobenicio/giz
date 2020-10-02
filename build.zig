@@ -11,21 +11,20 @@ pub fn build(b: *Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const exe = b.addExecutable("giz", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
-    exe.install();
+    const giz_exe = b.addExecutable("giz", "src/main.zig");
+    giz_exe.setTarget(target);
+    giz_exe.setBuildMode(mode);
+    giz_exe.install();
 
-    const run_cmd = exe.run();
+    const run_cmd = giz_exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
-    // TODO add testing steps
-
-    // const test_step = b.step("test", "Run all tests");
-    // test_step.dependOn(&exe.step);
-    // const ansi_test = b.addTest("./src/giz.zig");
-    // test_step.dependencies.append(ansi_test);
+    // Test Step
+    const tests = b.addTest("./tests.zig");
+    tests.setBuildMode(mode);
+    const test_step = b.step("test", "Run all the tests");
+    test_step.dependOn(&tests.step);
 }

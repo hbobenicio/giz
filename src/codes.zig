@@ -93,6 +93,7 @@ pub const color = struct {
         pub const Cyan: []const u8 = "36";
         pub const White: []const u8 = "37";
         // Next arguments are `5;<n>` for Hicolors (0-255) or `2;<r>;<g>;<b> for Custom RGB`
+        // example: "\x1b[38;5;80m"
         pub const FgHiColor: []const u8 = "38";
         pub const FgReset: []const u8 = "39";
 
@@ -110,13 +111,11 @@ pub const color = struct {
         pub const Cyan: []const u8 = "46";
         pub const White: []const u8 = "47";
         // Next arguments are `5;<n>` for Hicolors (0-255) or `2;<r>;<g>;<b> for Custom RGB`
+        // example: "\x1b[38;5;80m"
         pub const BgHiColor: []const u8 = "48";
         pub const BgReset: []const u8 = "49";
 
         pub const BgHiColorPreffix: []const u8 = BgHiColor ++ ";5";
         pub const BgHiColorRGBPreffix: []const u8 = BgHiColor ++ ";2";
     };
-    // pub const ForegroundFancyBlue: []const u8 = comptime ESC ++ "[38;5;80m";
 };
-
-// TODO add tests

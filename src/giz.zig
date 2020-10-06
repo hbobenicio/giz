@@ -9,59 +9,13 @@ const Writer = std.fs.File.Writer;
 
 pub const codes = @import("./codes.zig");
 pub const cursor = @import("./cursor.zig");
+pub const Color = @import("./Color.zig").Color;
+pub const Style = @import("./Style.zig").Style;
+const EscapingSequence = @import("./EscapingSequence.zig").EscapingSequence;
 
 // TODO is it ok to have a global stdout?
 // TODO should'nt it be buffered? Is it already?
 const stdout = std.io.getStdOut();
-
-/// Color enumerates all suported colors.
-/// TODO add 256 true color support
-pub const Color = enum {
-    Black,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Magenta,
-    Cyan,
-    White,
-};
-
-pub const Style = struct {
-    fgColor: ?Color = null,
-    bgColor: ?Color = null,
-    bold: bool = false,
-    dim: bool = false,
-    italic: bool = false,
-    underline: bool = false,
-    inverse: bool = false,
-    hidden: bool = false,
-    strikethrough: bool = false,
-    // TODO builder API
-};
-
-// TODO Consider reimplementing this with an array list and std.mem.join
-// TODO Consider creating an init function with the separator parameter (which could be ';' or ':')
-// TODO Consider renaming this to something more Opaque/Reusable and intuitive (like CsvBuilder...)
-const EscapingSequence = struct {
-    buf: [30]u8 = undefined,
-    len: usize = 0,
-
-    pub fn appendCode(self: *@This(), code: []const u8) std.fmt.BufPrintError!void {
-        if (code.len + self.len > 30) {
-            return error.NoSpaceLeft;
-        }
-        if (self.len > 0) {
-            self.buf[self.len] = ';';
-            self.len += 1;
-        }
-        std.mem.copy(u8, self.buf[self.len..30], code);
-        self.len += code.len;
-    }
-    pub fn toSlice(self: *@This()) []const u8 {
-        return self.buf[0..self.len];
-    }
-};
 
 // TODO Fg and Bg styling can be done with just one escaping. Improve this function to use minimal escapings
 pub fn fmtStyle(buf: []u8, str: []const u8, style: Style) std.fmt.BufPrintError![]u8 {
@@ -293,6 +247,7 @@ pub fn backgroundColorEscapeCode(color: Color) []const u8 {
     };
 }
 
+// TODO move to io module
 pub fn setForegroundColor(color: Color) !void {
     const colorCode: []const u8 = foregroundColorEscapeCode(color);
     const w = stdout.writer();
@@ -303,6 +258,7 @@ pub fn setForegroundColor(color: Color) !void {
     });
 }
 
+// TODO move to io module
 pub fn setBackgroundColor(color: Color) !void {
     const colorCode: []const u8 = backgroundColorEscapeCode(color);
     const w = stdout.writer();
@@ -342,7 +298,7 @@ test "foreground colors" {
     const w = std.io.getStdErr().writer();
 
     try setForegroundColor(Color.Red);
-    _ = try stdout.write("red");
+    try w.writeAll("red");
     try resetGraphics();
 
     // TODO if this buffer is shared between an expression (for example: one w.print with multuple formats),
@@ -363,7 +319,7 @@ test "background colors" {
     const w = std.io.getStdErr().writer();
 
     try setBackgroundColor(Color.Red);
-    _ = try stdout.write("red");
+    try w.writeAll("red");
     try resetGraphics();
 
     // TODO if this buffer is shared between an expression (for example: one w.print with multuple formats),

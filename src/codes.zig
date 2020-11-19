@@ -14,6 +14,9 @@ pub const Esc: []const u8 = "\x1b";
 /// EscapePrefix represents the common "Esc[" escaping prefix pattern.
 pub const EscapePrefix: []const u8 = Esc ++ "[";
 
+/// Reset represents the reset code. All text attributes will be turned off.
+pub const Reset: []const u8 = "0";
+
 /// cursor is a namespace struct that groups all cursor ansi escape codes
 pub const cursor = struct {
 
@@ -76,10 +79,6 @@ pub const graphics = struct {
     };
 };
 
-
-/// Reset represents the reset code. All text attributes will be turned off.
-pub const Reset: []const u8 = "0";
-
 /// color namespace groups all color codes.
 pub const color = struct {
     /// fg namespace groups all foreground color codes.
@@ -119,3 +118,15 @@ pub const color = struct {
         pub const BgHiColorRGBPreffix: []const u8 = BgHiColor ++ ";2";
     };
 };
+
+pub inline fn resetEscapeSequence() []const u8 {
+    return EscapePrefix ++ Reset ++ graphics.SetModeSuffix;
+}
+
+pub inline fn resetForegroundEscapeSequence() []const u8 {
+    return EscapePrefix ++ color.fg.FgReset ++ graphics.SetModeSuffix;
+}
+
+pub inline fn resetBackgroundEscapeSequence() []const u8 {
+    return EscapePrefix ++ color.bg.BgReset ++ graphics.SetModeSuffix;
+}

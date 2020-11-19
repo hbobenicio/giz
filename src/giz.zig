@@ -141,7 +141,7 @@ fn fgStyle(buf: []u8, colorCode: []const u8, str: []const u8) std.fmt.BufPrintEr
         colorCode,
         codes.graphics.SetModeSuffix,
         str,
-        resetForegroundEscapeSequence(),
+        codes.resetForegroundEscapeSequence(),
     });
 }
 
@@ -151,7 +151,7 @@ fn bgStyle(buf: []u8, colorCode: []const u8, str: []const u8) std.fmt.BufPrintEr
         colorCode,
         codes.graphics.SetModeSuffix,
         str,
-        resetBackgroundEscapeSequence(),
+        codes.resetBackgroundEscapeSequence(),
     });
 }
 
@@ -271,7 +271,7 @@ pub fn setBackgroundColor(color: Color) !void {
 
 // TODO writer anytype
 pub fn resetGraphics() !void {
-    const escapeSequence: []const u8 = comptime resetEscapeSequence();
+    const escapeSequence: []const u8 = comptime codes.resetEscapeSequence();
     try writeSequence(escapeSequence);
 }
 
@@ -280,18 +280,6 @@ fn writeSequence(escapeSequence: []const u8) !void {
     if (writtenBytes != escapeSequence.len) {
         return error.WriteError;
     }
-}
-
-pub inline fn resetEscapeSequence() []const u8 {
-    return codes.EscapePrefix ++ codes.Reset ++ codes.graphics.SetModeSuffix;
-}
-
-pub inline fn resetForegroundEscapeSequence() []const u8 {
-    return codes.EscapePrefix ++ codes.color.fg.FgReset ++ codes.graphics.SetModeSuffix;
-}
-
-pub inline fn resetBackgroundEscapeSequence() []const u8 {
-    return codes.EscapePrefix ++ codes.color.bg.BgReset ++ codes.graphics.SetModeSuffix;
 }
 
 test "foreground colors" {

@@ -1,3 +1,5 @@
+const codes = @import("./codes.zig");
+
 /// Color enumerates all suported colors.
 /// TODO add 256 true color support
 pub const Color = enum {

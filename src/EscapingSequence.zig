@@ -23,6 +23,7 @@ pub const EscapingSequence = struct {
         std.mem.copy(u8, self.buf[self.len..30], code);
         self.len += code.len;
     }
+    
     pub fn toSlice(self: *@This()) []const u8 {
         return self.buf[0..self.len];
     }

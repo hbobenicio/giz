@@ -35,3 +35,9 @@ Did you know...
 - tests
 - docs
 - thread safety!?
+
+## References
+
+- https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+- https://gist.github.com/XVilka/8346728
+- 

@@ -1,5 +1,4 @@
 //! Giz - Ansi support for zig.
-//! TODO Transform all TODO's of this project into github issues
 //! TODO conform API to style guide: https://ziglang.org/documentation/master/#Names
 
 const std = @import("std");
@@ -7,10 +6,13 @@ const os = std.os;
 const fmt = std.fmt;
 const Writer = std.fs.File.Writer;
 
+pub const config = @import("./config.zig");
 pub const codes = @import("./codes.zig");
 pub const cursor = @import("./cursor.zig");
+
 pub const Color = @import("./Color.zig").Color;
 pub const Style = @import("./Style.zig").Style;
+
 const EscapingSequence = @import("./EscapingSequence.zig").EscapingSequence;
 
 // TODO is it ok to have a global stdout?
@@ -63,7 +65,7 @@ pub fn fmtStyle(buf: []u8, str: []const u8, style: Style) std.fmt.BufPrintError!
         escapeSequence.toSlice(),
         codes.graphics.SetModeSuffix,
         str,
-        resetEscapeSequence(),
+        codes.resetEscapeSequence(),
     });
 }
 
@@ -101,7 +103,7 @@ pub fn fmtForegroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u
         rgbCode,
         codes.graphics.SetModeSuffix,
         str,
-        resetForegroundEscapeSequence(),
+        codes.resetForegroundEscapeSequence(),
     });
 }
 
@@ -131,7 +133,7 @@ pub fn fmtBackgroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u
         rgbCode,
         codes.graphics.SetModeSuffix,
         str,
-        resetBackgroundEscapeSequence(),
+        codes.resetBackgroundEscapeSequence(),
     });
 }
 

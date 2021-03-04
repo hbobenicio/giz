@@ -17,7 +17,7 @@ pub fn move(buf: []u8, row: u32, col: u32) Error!void {
     std.debug.assert(row <= 9999);
     std.debug.assert(col <= 9999);
 
-    const escapeSequence = try fmt.bufPrint(buf, "{}{};{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s};{s}{s}", .{
         codes.EscapePrefix,
         row,
         col,
@@ -31,7 +31,7 @@ pub fn up(buf: []u8, offset: u32) Error!void {
     // TODO assert min buf len?
     std.debug.assert(offset <= 9999);
 
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}{s}", .{
         codes.EscapePrefix,
         offset,
         codes.cursor.UpSuffix,
@@ -44,7 +44,7 @@ pub fn down(buf: []u8, offset: u32) Error!void {
     // TODO assert min buf len?
     std.debug.assert(offset <= 9999);
 
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}{s}", .{
         codes.EscapePrefix,
         offset,
         codes.cursor.DownSuffix,
@@ -57,7 +57,7 @@ pub fn forward(buf: []u8, offset: u32) Error!void {
     // TODO assert min buf len?
     std.debug.assert(offset <= 9999);
 
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}{s}", .{
         codes.EscapePrefix,
         offset,
         codes.cursor.ForwardSuffix,
@@ -70,7 +70,7 @@ pub fn backward(buf: []u8, offset: u32) Error!void {
     // TODO assert min buf len?
     std.debug.assert(offset <= 9999);
 
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}{s}", .{
         codes.EscapePrefix,
         offset,
         codes.cursor.BackwardSuffix,
@@ -81,7 +81,7 @@ pub fn backward(buf: []u8, offset: u32) Error!void {
 
 pub fn savePosition(buf: []u8) Error!void {
     // TODO assert min buf len?
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}", .{
         codes.EscapePrefix,
         codes.cursor.SavePositionSuffix,
     });
@@ -91,7 +91,7 @@ pub fn savePosition(buf: []u8) Error!void {
 
 pub fn restorePosition(buf: []u8) Error!void {
     // TODO assert min buf len?
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}", .{
         codes.EscapePrefix,
         codes.cursor.RestorePositionSuffix,
     });
@@ -101,7 +101,7 @@ pub fn restorePosition(buf: []u8) Error!void {
 
 pub fn eraseDisplay(buf: []u8) Error!void {
     // TODO assert min buf len?
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}", .{
         codes.EscapePrefix,
         codes.cursor.EraseDisplaySuffix,
     });
@@ -111,7 +111,7 @@ pub fn eraseDisplay(buf: []u8) Error!void {
 
 pub fn eraseLine(buf: []u8) Error!void {
     // TODO assert min buf len?
-    const escapeSequence = try fmt.bufPrint(buf, "{}{}", .{
+    const escapeSequence = try fmt.bufPrint(buf, "{s}{s}", .{
         codes.EscapePrefix,
         codes.cursor.EraseLineSuffix,
     });

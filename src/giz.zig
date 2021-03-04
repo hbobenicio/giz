@@ -60,7 +60,7 @@ pub fn fmtStyle(buf: []u8, str: []const u8, style: Style) std.fmt.BufPrintError!
         try escapeSequence.appendCode(codes.graphics.attr.Strikethrough);
     }
 
-    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}{s}{s}", .{
         codes.EscapePrefix,
         escapeSequence.toSlice(),
         codes.graphics.SetModeSuffix,
@@ -71,7 +71,7 @@ pub fn fmtStyle(buf: []u8, str: []const u8, style: Style) std.fmt.BufPrintError!
 
 // TODO consider if we will use this function. Is that worth it? (subslicing buf and double writing to memory doesn't seem a good payoff)
 inline fn fmtGraphicsCode(buf: []u8, code: []const u8) std.fmt.BufPrintError![]u8 {
-    return fmt.bufPrint(buf, "{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}", .{
         codes.EscapePrefix,
         code,
         codes.graphics.SetModeSuffix,
@@ -98,7 +98,7 @@ pub fn fmtForegroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u
     try escapeSeq.appendCode(b);
     const rgbCode: []const u8 = escapeSeq.toSlice();
 
-    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}{s}{s}", .{
         codes.EscapePrefix,
         rgbCode,
         codes.graphics.SetModeSuffix,
@@ -128,7 +128,7 @@ pub fn fmtBackgroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u
     try escapeSeq.appendCode(b);
     const rgbCode: []const u8 = escapeSeq.toSlice();
 
-    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}{s}{s}", .{
         codes.EscapePrefix,
         rgbCode,
         codes.graphics.SetModeSuffix,
@@ -138,7 +138,7 @@ pub fn fmtBackgroundRGBStr(buf: []u8, r: []const u8, g: []const u8, b: []const u
 }
 
 fn fgStyle(buf: []u8, colorCode: []const u8, str: []const u8) std.fmt.BufPrintError![]u8 {
-    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}{s}{s}", .{
         codes.EscapePrefix,
         colorCode,
         codes.graphics.SetModeSuffix,
@@ -148,7 +148,7 @@ fn fgStyle(buf: []u8, colorCode: []const u8, str: []const u8) std.fmt.BufPrintEr
 }
 
 fn bgStyle(buf: []u8, colorCode: []const u8, str: []const u8) std.fmt.BufPrintError![]u8 {
-    return fmt.bufPrint(buf, "{}{}{}{}{}", .{
+    return fmt.bufPrint(buf, "{s}{s}{s}{s}{s}", .{
         codes.EscapePrefix,
         colorCode,
         codes.graphics.SetModeSuffix,
@@ -253,7 +253,7 @@ pub fn backgroundColorEscapeCode(color: Color) []const u8 {
 pub fn setForegroundColor(color: Color) !void {
     const colorCode: []const u8 = foregroundColorEscapeCode(color);
     const w = stdout.writer();
-    try w.print("{}{}{}", .{
+    try w.print("{s}{s}{s}", .{
         codes.EscapePrefix,
         colorCode,
         codes.graphics.SetModeSuffix,
@@ -264,7 +264,7 @@ pub fn setForegroundColor(color: Color) !void {
 pub fn setBackgroundColor(color: Color) !void {
     const colorCode: []const u8 = backgroundColorEscapeCode(color);
     const w = stdout.writer();
-    try w.print("{}{}{}", .{
+    try w.print("{s}{s}{s}", .{
         codes.EscapePrefix,
         colorCode,
         codes.graphics.SetModeSuffix,
@@ -295,14 +295,14 @@ test "foreground colors" {
     // then this will break.
     var tmpBuf: [100]u8 = undefined;
 
-    try w.print(" {}", .{ try green(&tmpBuf, "green") });
-    try w.print(" {}", .{ try yellow(&tmpBuf, "yellow") });
-    try w.print(" {}", .{ try blue(&tmpBuf, "blue") });
-    try w.print(" {}", .{ try magenta(&tmpBuf, "magenta") });
-    try w.print(" {}", .{ try cyan(&tmpBuf, "cyan") });
-    try w.print(" {}", .{ try white(&tmpBuf, "white") });
+    try w.print(" {s}", .{ try green(&tmpBuf, "green") });
+    try w.print(" {s}", .{ try yellow(&tmpBuf, "yellow") });
+    try w.print(" {s}", .{ try blue(&tmpBuf, "blue") });
+    try w.print(" {s}", .{ try magenta(&tmpBuf, "magenta") });
+    try w.print(" {s}", .{ try cyan(&tmpBuf, "cyan") });
+    try w.print(" {s}", .{ try white(&tmpBuf, "white") });
     // TODO grey
-    try w.print(" {}", .{ try black(&tmpBuf, "black") });
+    try w.print(" {s}", .{ try black(&tmpBuf, "black") });
 }
 
 test "background colors" {
@@ -316,12 +316,12 @@ test "background colors" {
     // then this will break.
     var tmpBuf: [100]u8 = undefined;
 
-    try w.print(" {}", .{ try bgGreen(&tmpBuf, "bgGreen") });
-    try w.print(" {}", .{ try bgYellow(&tmpBuf, "bgYellow") });
-    try w.print(" {}", .{ try bgBlue(&tmpBuf, "bgBlue") });
-    try w.print(" {}", .{ try bgMagenta(&tmpBuf, "bgMagenta") });
-    try w.print(" {}", .{ try bgCyan(&tmpBuf, "bgCyan") });
-    try w.print(" {}", .{ try bgWhite(&tmpBuf, "bgWhite") });
+    try w.print(" {s}", .{ try bgGreen(&tmpBuf, "bgGreen") });
+    try w.print(" {s}", .{ try bgYellow(&tmpBuf, "bgYellow") });
+    try w.print(" {s}", .{ try bgBlue(&tmpBuf, "bgBlue") });
+    try w.print(" {s}", .{ try bgMagenta(&tmpBuf, "bgMagenta") });
+    try w.print(" {s}", .{ try bgCyan(&tmpBuf, "bgCyan") });
+    try w.print(" {s}", .{ try bgWhite(&tmpBuf, "bgWhite") });
     // TODO grey
-    try w.print(" {}", .{ try bgBlack(&tmpBuf, "bgBlack") });
+    try w.print(" {s}", .{ try bgBlack(&tmpBuf, "bgBlack") });
 }

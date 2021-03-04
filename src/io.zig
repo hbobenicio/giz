@@ -10,20 +10,20 @@ const color = @import("./Color.zig");
 const Color = color.Color;
 
 pub inline fn printResetGraphics(writer: anytype) !void {
-    try writer.print("{}", .{codes.resetEscapeSequence()});
+    try writer.print("{s}", .{codes.resetEscapeSequence()});
 }
 
 pub inline fn printResetForeground(writer: anytype) !void {
-    try writer.print("{}", .{codes.resetForegroundEscapeSequence()});
+    try writer.print("{s}", .{codes.resetForegroundEscapeSequence()});
 }
 
 pub inline fn printResetBackground(writer: anytype) !void {
-    try writer.print("{}", .{codes.resetBackgroundEscapeSequence()});
+    try writer.print("{s}", .{codes.resetBackgroundEscapeSequence()});
 }
 
 pub fn printForegroundColor(writer: anytype, c: Color) !void {
     const color_code: []const u8 = color.colorToForegroundCode(c);
-    try writer.print("{}{}{}", .{
+    try writer.print("{s}{s}{s}", .{
         codes.EscapePrefix,
         color_code,
         codes.graphics.SetModeSuffix,
@@ -32,7 +32,7 @@ pub fn printForegroundColor(writer: anytype, c: Color) !void {
 
 pub fn printBackgroundColor(writer: anytype, c: Color) !void {
     const colorCode: []const u8 = color.colorToBackgroundCode(c);
-    try writer.print("{}{}{}", .{
+    try writer.print("{s}{s}{s}", .{
         codes.EscapePrefix,
         colorCode,
         codes.graphics.SetModeSuffix,

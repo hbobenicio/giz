@@ -13,14 +13,13 @@ pub fn main() !void {
 
     var giz_config: giz.config.Config = giz.config.default();
 
-    // TODO instead of abording execution if no TTY, just pass down a NoColor config to giz,
-    // so escaping colors should not be emitted. This would be handy to have as 
+    // TODO Check if this config is working and ansi escape codes are actually not been written out
     if (!stdout.isTty()) {
-        std.log.warn("warn: your console is not a tty", .{});
+        std.log.warn("your console is not a tty. disabling giz color mode.", .{});
         giz_config.color_mode = giz.config.ColorMode.no_color;
     }
     if (!stdout.supportsAnsiEscapeCodes()) {
-        std.log.warn("warn: your console doesn't support ansi escape codes", .{});
+        std.log.warn("your console doesn't support ansi escape codes. disabling giz color mode.", .{});
         giz_config.color_mode = giz.config.ColorMode.no_color;
     }
 
@@ -35,45 +34,45 @@ pub fn main() !void {
     try w.writeAll("└─────────────────────────────────────────────┘\n");
 
     // Full customization with fmtStyle, which writes to a buffer the scapings codes according to your styles
-    try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "bold", .{ .bold = true })});
-    try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "dim", .{ .dim = true })});
-    try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "italic", .{ .italic = true })});
-    try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "underline", .{ .underline = true })});
-    try w.print("{} ", .{try giz.fmtStyle(tmpBuf[0..], "inverse", .{ .inverse = true })});
-    try w.print("{}\n", .{try giz.fmtStyle(tmpBuf[0..], "strikethrough", .{ .strikethrough = true })});
+    try w.print("{s} ", .{try giz.fmtStyle(tmpBuf[0..], "bold", .{ .bold = true })});
+    try w.print("{s} ", .{try giz.fmtStyle(tmpBuf[0..], "dim", .{ .dim = true })});
+    try w.print("{s} ", .{try giz.fmtStyle(tmpBuf[0..], "italic", .{ .italic = true })});
+    try w.print("{s} ", .{try giz.fmtStyle(tmpBuf[0..], "underline", .{ .underline = true })});
+    try w.print("{s} ", .{try giz.fmtStyle(tmpBuf[0..], "inverse", .{ .inverse = true })});
+    try w.print("{s}\n", .{try giz.fmtStyle(tmpBuf[0..], "strikethrough", .{ .strikethrough = true })});
 
     // Or you could use handy methods for common colors like red, green, blue, ...
-    try w.print("{} ", .{try giz.red(tmpBuf[0..], "red")});
-    try w.print("{} ", .{try giz.green(tmpBuf[0..], "green")});
-    try w.print("{} ", .{try giz.yellow(tmpBuf[0..], "yellow")});
-    try w.print("{} ", .{try giz.blue(tmpBuf[0..], "blue")});
-    try w.print("{} ", .{try giz.magenta(tmpBuf[0..], "magenta")});
-    try w.print("{} ", .{try giz.cyan(tmpBuf[0..], "cyan")});
-    try w.print("{} ", .{try giz.white(tmpBuf[0..], "white")});
+    try w.print("{s} ", .{try giz.red(tmpBuf[0..], "red")});
+    try w.print("{s} ", .{try giz.green(tmpBuf[0..], "green")});
+    try w.print("{s} ", .{try giz.yellow(tmpBuf[0..], "yellow")});
+    try w.print("{s} ", .{try giz.blue(tmpBuf[0..], "blue")});
+    try w.print("{s} ", .{try giz.magenta(tmpBuf[0..], "magenta")});
+    try w.print("{s} ", .{try giz.cyan(tmpBuf[0..], "cyan")});
+    try w.print("{s} ", .{try giz.white(tmpBuf[0..], "white")});
     // TODO grey
-    try w.print("{}\n", .{try giz.black(tmpBuf[0..], "black")});
+    try w.print("{s}\n", .{try giz.black(tmpBuf[0..], "black")});
 
     // Background colors also have handy methods for common colors!
-    try w.print("{} ", .{try giz.bgRed(tmpBuf[0..], "bgRed")});
-    try w.print("{} ", .{try giz.bgGreen(tmpBuf[0..], "bgGreen")});
-    try w.print("{} ", .{try giz.bgYellow(tmpBuf[0..], "bgYellow")});
-    try w.print("{} ", .{try giz.bgBlue(tmpBuf[0..], "bgBlue")});
-    try w.print("{} ", .{try giz.bgMagenta(tmpBuf[0..], "bgMagenta")});
-    try w.print("{} ", .{try giz.bgCyan(tmpBuf[0..], "bgCyan")});
-    try w.print("{} ", .{try giz.bgWhite(tmpBuf[0..], "bgWhite")});
+    try w.print("{s} ", .{try giz.bgRed(tmpBuf[0..], "bgRed")});
+    try w.print("{s} ", .{try giz.bgGreen(tmpBuf[0..], "bgGreen")});
+    try w.print("{s} ", .{try giz.bgYellow(tmpBuf[0..], "bgYellow")});
+    try w.print("{s} ", .{try giz.bgBlue(tmpBuf[0..], "bgBlue")});
+    try w.print("{s} ", .{try giz.bgMagenta(tmpBuf[0..], "bgMagenta")});
+    try w.print("{s} ", .{try giz.bgCyan(tmpBuf[0..], "bgCyan")});
+    try w.print("{s} ", .{try giz.bgWhite(tmpBuf[0..], "bgWhite")});
     // TODO grey
-    try w.print("{}\n\n", .{try giz.bgBlack(tmpBuf[0..], "bgBlack")});
+    try w.print("{s}\n\n", .{try giz.bgBlack(tmpBuf[0..], "bgBlack")});
 
     try w.writeAll("┌──────────────┐\n");
     try w.writeAll("│ Hicolor Demo │\n");
     try w.writeAll("└──────────────┘\n");
 
     // RGB's support demo
-    try w.print("{} ", .{try giz.fmtForegroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zig")});
-    try w.print("{}\n", .{try giz.fmtBackgroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zag")});
+    try w.print("{s} ", .{try giz.fmtForegroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zig")});
+    try w.print("{s}\n", .{try giz.fmtBackgroundRGBStr(tmpBuf[0..], "247", "164", "29", "Zag")});
 
-    try w.print("{} ", .{try giz.fmtForegroundRGB(tmpBuf[0..], 247, 164, 29, "Zig")});
-    try w.print("{}\n\n", .{try giz.fmtBackgroundRGB(tmpBuf[0..], 247, 164, 29, "Zag")});
+    try w.print("{s} ", .{try giz.fmtForegroundRGB(tmpBuf[0..], 247, 164, 29, "Zig")});
+    try w.print("{s}\n\n", .{try giz.fmtBackgroundRGB(tmpBuf[0..], 247, 164, 29, "Zag")});
 
     try w.writeAll("┌────────────┐\n");
     try w.writeAll("│ Misc.      │\n");
@@ -86,7 +85,7 @@ pub fn main() !void {
         .bold = true,
         .underline = true,
     };
-    try w.print("{}\n\n", .{try giz.fmtStyle(tmpBuf[0..], "IBM Style", ibmStyle)});
+    try w.print("{s}\n\n", .{try giz.fmtStyle(tmpBuf[0..], "IBM Style", ibmStyle)});
 
     try w.writeAll("┌─────────────┐\n");
     try w.writeAll("│ Cursor Demo │\n");

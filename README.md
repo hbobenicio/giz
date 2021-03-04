@@ -5,6 +5,11 @@
 This project is really early in development, thus this is not a finished work.
 Many API breaking changes may come until this finishes the core functionalities and we get a minimum API stabilization.
 
+## Roadmap to 0.1
+
+1. Comptime API
+2. Finish Formatting API
+
 ## Usage
 
 TODO
